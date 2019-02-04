@@ -1,0 +1,80 @@
+using System.Collections;
+using UnityEngine.UI;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerController : MonoBehaviour
+{
+    public float speed;
+    public Text countText;
+    public Text WinText;
+    public Text ScoreText;
+
+
+    private Rigidbody rb;
+
+    private int count;
+    private int score;
+
+    private void Start()
+    {
+
+        rb = GetComponent<Rigidbody>();
+        count = 0;
+        SetCountText();
+        score = 0;
+        SetScoreText();
+        WinText.text = "";
+    
+    }
+
+    void FixedUpdate ()
+    {
+        float moveHorizontal = Input.GetAxis ("Horizontal");
+        float moveVertical = Input.GetAxis ("Vertical");
+
+        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+
+        rb.AddForce(movement * speed);
+
+        if (Input.GetKey("escape"))
+            Application.Quit();
+    }
+
+
+    void OnTriggerEnter(Collider other)
+        {
+        if (other.gameObject.CompareTag("Pick Up"))
+        {
+            other.gameObject.SetActive(false);
+            count = count + 1;
+            SetCountText();
+            score = score + 1;
+            SetScoreText();
+        }
+        if (other.gameObject.CompareTag("Enem"))
+        {
+            other.gameObject.SetActive(false);
+            score = score - 1;
+            SetScoreText();
+        }
+
+    }
+
+    void SetCountText ()
+    {
+        countText.text = "Count: " + count.ToString();
+       
+    }
+
+    void SetScoreText()
+    {
+        ScoreText.text = "Score: " + score.ToString();
+        if (score >= 12)
+        {
+            WinText.text = "You Win!";
+        }
+    }
+
+  
+}
